@@ -72,22 +72,30 @@ static S3Sync * s3sync;
                     NSLog(@"%@", error);
                     continue;
                 }
+                
+                NSString * filename = [objectSummary.key lastPathComponent];
+                NSString * filePath = [_storageDirectory stringByAppendingPathComponent:filename];
+
                 S3Object * storedObject = results.firstObject;
                 if(storedObject!= nil){
                     if([storedObject.etag isEqualToString:objectSummary.etag]){
-                        // Don't need to re-download this file
-                        continue;
+                        if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+                            NSLog(@"File has summary but is not present %@", filePath);
+                        } else {
+                            // Don't need to re-download this file
+                            continue;
+                        }
+                        
                     }
                 } else {
                     storedObject = [NSEntityDescription insertNewObjectForEntityForName:@"S3Object" inManagedObjectContext:tmpContext];
                     storedObject.key = objectSummary.key;
                 }
-                
-                NSString * filename = [objectSummary.key lastPathComponent];
+
+                NSLog(@"%@", filePath);
                 if(_delegate != nil){
                     [_delegate s3SyncStartedFileDownload:filename];
                 }
-                NSString * filePath = [NSString stringWithFormat:@"%@/%@", _storageDirectory, filename];
                 NSOutputStream *stream = [[NSOutputStream alloc] initToFileAtPath:filePath append:NO];
                 [stream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
                 [stream open];

@@ -100,6 +100,7 @@ static S3Sync * s3sync;
                 [stream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
                 [stream open];
                 S3GetObjectRequest * request = [[S3GetObjectRequest alloc] initWithKey:objectSummary.key withBucket:bucketName];
+                request.outputStream = stream;
                 [_s3 getObject:request];
                 [stream close];
                 

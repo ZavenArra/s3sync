@@ -87,7 +87,8 @@ static S3Sync * s3sync;
                 if(_delegate != nil){
                     [_delegate s3SyncStartedFileDownload:filename];
                 }
-                NSOutputStream *stream = [[NSOutputStream alloc] initToFileAtPath:filename append:NO];
+                NSString * filePath = [NSString stringWithFormat:@"%@/%@", _storageDirectory, filename];
+                NSOutputStream *stream = [[NSOutputStream alloc] initToFileAtPath:filePath append:NO];
                 [stream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
                 [stream open];
                 S3GetObjectRequest * request = [[S3GetObjectRequest alloc] initWithKey:objectSummary.key withBucket:bucketName];

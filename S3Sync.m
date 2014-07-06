@@ -125,8 +125,7 @@ static S3Sync * s3sync;
 }
 
 - (void) reset {
-    NSFetchRequest * fetch = [[NSFetchRequest alloc] init];
-    [fetch setEntity:[NSEntityDescription entityForName:@"S3Object" inManagedObjectContext:[VCCoreData managedObjectContext]]];
+    NSFetchRequest * fetch = [NSFetchRequest fetchRequestWithEntityName:@"S3Object"];
     [fetch setIncludesPropertyValues:NO]; //only fetch the managedObjectID
     
     NSError * error = nil;
